@@ -20,7 +20,6 @@ L'application s'articule autour de trois axes majeurs :
 
 ## Technologies utilisées
 
-Le projet repose sur une stack technologique moderne et performante :
 
 | Technologie | Usage |
 | :--- | :--- |
@@ -28,7 +27,6 @@ Le projet repose sur une stack technologique moderne et performante :
 | **TypeScript** | Typage statique pour une meilleure robustesse du code. |
 | **Vite** | Outil de build ultra-rapide pour le développement. |
 | **Tailwind CSS** | Framework CSS pour un design responsive et moderne. |
-| **Radix UI** | Composants d'interface accessibles et non stylisés. |
 | **Lucide React** | Bibliothèque d'icônes élégantes. |
 
 ---
