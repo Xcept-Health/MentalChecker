@@ -31,7 +31,7 @@ export default function LegalWarning({ onAccept, onDeny }: LegalWarningProps) {
     {
       id: 'emergency',
       title: 'En cas d\'urgence',
-      content: 'Si vous êtes en détresse immédiate ou avez des pensées suicidaires, contactez immédiatement le 112, le 15 (SAMU), ou rendez-vous aux urgences les plus proches. Vous pouvez également appeler le 3114 (Suicide Prévention) 24h/24.',
+      content: 'Si vous êtes en détresse immédiate ou avez des pensées suicidaires, contactez immédiatement le 18 (Sapeurs pompiers burkina Faso), le 15 (SAMU), ou rendez-vous aux urgences les plus proches. Vous pouvez également appeler le 3114 (Suicide Prévention) 24h/24.',
       icon: <Siren className="w-4 h-4" />,
       urgent: true
     },
