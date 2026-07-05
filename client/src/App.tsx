@@ -21,7 +21,7 @@ function ThemeToggle() {
   return (
     <button
       onClick={toggleTheme}
-      className="fixed top-6 right-6 z-40 w-12 h-12 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center hover:shadow-lg transition-all duration-300 text-foreground"
+      className="fixed top-6 right-6 z-[60] w-12 h-12 rounded-full bg-muted border border-border/40 flex items-center justify-center hover:bg-muted/80 shadow-sm transition-all duration-300 text-foreground"
       title={theme === "dark" ? "Mode clair" : "Mode sombre"}
     >
       {theme === "dark" ? (
@@ -40,7 +40,7 @@ function Router({ currentView, setCurrentView }: { currentView: View; setCurrent
       <div className="min-h-screen">
         <button
           onClick={() => setCurrentView('home')}
-          className="fixed top-6 left-6 z-40 px-4 py-2 rounded-full bg-slate-200 dark:bg-slate-700 text-foreground hover:shadow-lg transition-all duration-300 font-medium"
+          className="fixed top-6 left-6 z-40 px-4 py-2 rounded-full bg-muted border border-border/40 text-foreground hover:bg-muted/80 shadow-sm transition-all duration-300 font-medium"
         >
           ← Retour
         </button>
@@ -64,7 +64,7 @@ function AppContent() {
 
   return (
     <>
-      {/* <ThemeToggle /> */}
+      <ThemeToggle />
       <Router currentView={currentView} setCurrentView={setCurrentView} />
     </>
   );

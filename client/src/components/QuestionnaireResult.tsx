@@ -1,25 +1,22 @@
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { 
   AlertCircle, 
   CheckCircle, 
   AlertTriangle, 
   Sparkles, 
-  Heart, 
-  Star, 
-  ArrowLeft, 
-  ChevronRight, 
   BookOpen, 
   UserCheck,
   Stethoscope,
   PhoneCall,
   MessageSquare,
   Hourglass,
-  Bike,
   Bed,
   Ear,
   Trees,
   Shield,
-  Brain
+  Brain,
+  ArrowRight,
+  Info
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
@@ -42,20 +39,19 @@ export default function QuestionnaireResult({
 }: QuestionnaireResultProps) {
   const percentage = (score / maxScore) * 100;
   const [showCelebration, setShowCelebration] = useState(false);
-  const [activeTab, setActiveTab] = useState<'result' | 'advice' | 'resources'>('result');
 
   const getSeverityColor = () => {
-    if (urgent) return 'bg-rose-50 text-rose-900 border-rose-200';
-    if (percentage <= 15) return 'bg-stone-100 text-stone-900 border-stone-200';
-    if (percentage <= 40) return 'bg-stone-100 text-stone-900 border-stone-200';
-    if (percentage <= 60) return 'bg-amber-50 text-amber-900 border-amber-200';
-    return 'bg-rose-50 text-rose-900 border-rose-200';
+    if (urgent) return 'bg-destructive/10 text-destructive border-destructive/20';
+    if (percentage <= 15) return 'bg-primary/10 text-primary border-primary/20';
+    if (percentage <= 60) return 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20';
+    return 'bg-destructive/10 text-destructive border-destructive/20';
   };
 
   const getSeverityIcon = () => {
-    if (urgent) return <AlertTriangle className="w-12 h-12" />;
-    if (percentage <= 15) return <CheckCircle className="w-12 h-12" />;
-    return <AlertCircle className="w-12 h-12" />;
+    if (urgent) return <AlertTriangle className="w-10 h-10" />;
+    if (percentage <= 15) return <CheckCircle className="w-10 h-10" />;
+    if (percentage <= 60) return <AlertCircle className="w-10 h-10" />;
+    return <AlertTriangle className="w-10 h-10" />;
   };
 
   const getRecommendations = () => {
@@ -98,326 +94,207 @@ export default function QuestionnaireResult({
   }, [percentage, urgent]);
 
   return (
-    <div className="min-h-screen bg-[#FDFCFB] text-stone-800 font-serif selection:bg-stone-200">
-      {/* Header épuré */}
-      <header className="pt-6 pb-8 px-6 text-center border-b border-stone-100">
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
-          <h1 className="text-3xl font-light text-stone-900 mb-2">
-            Mental<span className="italic text-stone-500">Checker</span>
-          </h1>
-          <p className="text-stone-500 font-sans text-sm uppercase tracking-widest">
-            {questionnaireName} • Résultats
-          </p>
-        </motion.div>
-      </header>
-
-      <main className="max-w-2xl mx-auto px-6 py-8">
-        {/* Score principal avec effet glass */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="relative mb-10"
-        >
-          <div className="bg-white rounded-[2.5rem] p-8 border border-stone-200 shadow-sm">
-            {/* Score circulaire */}
-            <div className="flex items-center justify-between mb-6">
-              <div className="text-left">
-                <p className="text-stone-500 font-sans text-sm uppercase tracking-widest mb-1">Score obtenu</p>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-6xl font-light text-stone-900">{score}</span>
-                  <span className="text-stone-400">/ {maxScore}</span>
-                </div>
-              </div>
-              
-              <div className={`
-                w-20 h-20 rounded-full flex items-center justify-center border-2
-                ${urgent ? 'bg-rose-100 border-rose-200' : 
-                  percentage <= 15 ? 'bg-stone-100 border-stone-200' : 
-                  'bg-amber-100 border-amber-200'}
-              `}>
-                {getSeverityIcon()}
-              </div>
+    <div className="min-h-screen bg-background text-foreground font-sans selection:bg-primary/20 selection:text-primary pb-20">
+      
+      {/* Header Professionnel Pleine Largeur */}
+      <header className="w-full bg-card border-b border-border/40 py-10 px-6 sticky top-0 z-30 shadow-sm">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+          <div>
+            <div className="flex items-center gap-3 mb-2">
+              <span className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-primary text-primary-foreground font-serif font-bold">M</span>
+              <span className="text-sm font-semibold tracking-wider uppercase text-muted-foreground">Rapport Clinique</span>
             </div>
-
-            {/* Barre de progression élégante */}
-            <div className="mb-6">
-              <div className="flex justify-between items-center mb-3">
-                <span className="text-stone-700 font-sans">{severity}</span>
-                <span className="text-stone-500 font-sans text-sm">{Math.round(percentage)}%</span>
-              </div>
-              <div className="w-full h-1.5 bg-stone-200 rounded-full overflow-hidden">
-                <motion.div
-                  className={`
-                    h-full rounded-full
-                    ${urgent ? 'bg-gradient-to-r from-rose-600 to-rose-400' : 
-                      percentage <= 15 ? 'bg-gradient-to-r from-stone-600 to-stone-400' : 
-                      percentage <= 60 ? 'bg-gradient-to-r from-amber-600 to-amber-400' : 
-                      'bg-gradient-to-r from-rose-600 to-amber-600'}
-                  `}
-                  initial={{ width: 0 }}
-                  animate={{ width: `${Math.min(percentage, 100)}%` }}
-                  transition={{ duration: 1.5, ease: "easeOut" }}
-                />
-              </div>
-            </div>
-
-            {/* Message court */}
-            <div className="text-center pt-4 border-t border-stone-100">
-              <p className="text-stone-600 font-sans leading-relaxed">
-                {urgent 
-                  ? "Votre bien-être mérite une attention immédiate"
-                  : percentage <= 15
-                  ? "Votre équilibre semble bien maintenu"
-                  : "Prenez ce moment pour écouter vos besoins"}
-              </p>
-            </div>
-          </div>
-
-          {/* Badge de célébration */}
-          <AnimatePresence>
-            {showCelebration && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0, y: 20 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0 }}
-                className="absolute -top-3 -right-3"
-              >
-                <div className="bg-stone-100 border border-stone-200 rounded-full py-2 px-4 flex items-center gap-2 backdrop-blur-sm">
-                  <Sparkles className="w-4 h-4 text-amber-600" />
-                  <span className="text-xs font-medium text-stone-800 font-sans">Excellent travail</span>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </motion.div>
-
-        {/* Navigation par onglets */}
-        <div className="flex border-b border-stone-200 mb-8">
-          <button
-            onClick={() => setActiveTab('result')}
-            className={`flex-1 py-3 text-sm font-sans transition-colors ${
-              activeTab === 'result'
-                ? 'text-stone-900 border-b-2 border-stone-900'
-                : 'text-stone-500 hover:text-stone-700'
-            }`}
-          >
-            Résultat
-          </button>
-          <button
-            onClick={() => setActiveTab('advice')}
-            className={`flex-1 py-3 text-sm font-sans transition-colors ${
-              activeTab === 'advice'
-                ? 'text-stone-900 border-b-2 border-stone-900'
-                : 'text-stone-500 hover:text-stone-700'
-            }`}
-          >
-            Recommandations
-          </button>
-          <button
-            onClick={() => setActiveTab('resources')}
-            className={`flex-1 py-3 text-sm font-sans transition-colors ${
-              activeTab === 'resources'
-                ? 'text-stone-900 border-b-2 border-stone-900'
-                : 'text-stone-500 hover:text-stone-700'
-            }`}
-          >
-            Ressources
-          </button>
-        </div>
-
-        {/* Contenu des onglets */}
-        <AnimatePresence mode="wait">
-          {activeTab === 'result' && (
-            <motion.div
-              key="result"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              className="space-y-6"
-            >
-              {/* Explication */}
-              <div className="bg-white rounded-3xl p-6 border border-stone-200">
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-full bg-stone-100 flex items-center justify-center flex-shrink-0">
-                    <BookOpen className="w-6 h-6 text-stone-600" />
-                  </div>
-                  <div>
-                    <h3 className="font-serif text-lg font-light text-stone-900 mb-2">
-                      Comprendre votre score
-                    </h3>
-                    <p className="text-stone-600 font-sans text-sm leading-relaxed">
-                      Ce questionnaire évalue {questionnaireName.toLowerCase()} sur une échelle de 0 à {maxScore}. 
-                      {urgent
-                        ? " Votre score suggère une détresse importante qui mérite une attention professionnelle."
-                        : percentage <= 15
-                        ? " Votre score indique un niveau de bien-être satisfaisant."
-                        : " Votre score montre des signes qui méritent attention et soin."}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Prochaines étapes */}
-              <div className="bg-stone-50 rounded-3xl p-6 border border-stone-200">
-                <h3 className="font-serif text-lg font-light text-stone-900 mb-4">
-                  Prochaines étapes
-                </h3>
-                <ul className="space-y-3">
-                  {getRecommendations().slice(0, 3).map((rec, index) => (
-                    <li key={index} className="flex items-start gap-3">
-                      <div className="w-6 h-6 rounded-full bg-stone-200 flex items-center justify-center mt-0.5 flex-shrink-0">
-                        <div className="w-1.5 h-1.5 rounded-full bg-stone-600" />
-                      </div>
-                      <span className="text-stone-700 font-sans text-sm">{rec.text}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </motion.div>
-          )}
-
-          {activeTab === 'advice' && (
-            <motion.div
-              key="advice"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              className="space-y-4"
-            >
-              {getRecommendations().map((rec, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  className="group flex items-center gap-4 p-4 bg-white rounded-2xl border border-stone-200 hover:border-stone-300 transition-colors"
-                >
-                  <div className="w-10 h-10 rounded-lg bg-stone-100 group-hover:bg-stone-200 transition-colors flex items-center justify-center flex-shrink-0">
-                    {rec.icon}
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-stone-800 font-sans">{rec.text}</p>
-                  </div>
-                  <ChevronRight className="w-4 h-4 text-stone-400 group-hover:text-stone-600 transition-colors" />
-                </motion.div>
-              ))}
-            </motion.div>
-          )}
-
-          {activeTab === 'resources' && (
-            <motion.div
-              key="resources"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              className="space-y-6"
-            >
-              {/* Ressources urgentes */}
-              {urgent && (
-                <div className="bg-rose-50 rounded-3xl p-6 border border-rose-200">
-                  <div className="flex items-start gap-4 mb-4">
-                    <AlertTriangle className="w-6 h-6 text-rose-600 mt-0.5 flex-shrink-0" />
-                    <div>
-                      <h3 className="font-serif text-lg font-light text-rose-900 mb-1">
-                        Ressources immédiates
-                      </h3>
-                      <p className="text-rose-700 font-sans text-sm">
-                        Ces ressources peuvent vous offrir un soutien rapide
-                      </p>
-                    </div>
-                  </div>
-                  <div className="space-y-3">
-                    <div className="p-3 bg-white/50 rounded-xl border border-rose-100">
-                      <p className="font-medium text-rose-900 text-sm mb-1">Ligne d'écoute</p>
-                      <p className="text-rose-700 text-xs">3114 • Gratuit, 24h/24</p>
-                    </div>
-                    <div className="p-3 bg-white/50 rounded-xl border border-rose-100">
-                      <p className="font-medium text-rose-900 text-sm mb-1">Urgences médicales</p>
-                      <p className="text-rose-700 text-xs">15 • SAMU</p>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* Ressources générales */}
-              <div className="bg-white rounded-3xl p-6 border border-stone-200">
-                <h3 className="font-serif text-lg font-light text-stone-900 mb-4">
-                  Ressources utiles
-                </h3>
-                <div className="space-y-3">
-                  <div className="p-4 bg-stone-50 rounded-xl border border-stone-200">
-                    <p className="font-medium text-stone-900 text-sm mb-1">Consultation psychologique</p>
-                    <p className="text-stone-600 text-xs">Prenez rendez-vous avec un professionnel</p>
-                  </div>
-                  <div className="p-4 bg-stone-50 rounded-xl border border-stone-200">
-                    <p className="font-medium text-stone-900 text-sm mb-1">Applications de bien-être</p>
-                    <p className="text-stone-600 text-xs">Méditation, suivi d'humeur, exercices</p>
-                  </div>
-                  <div className="p-4 bg-stone-50 rounded-xl border border-stone-200">
-                    <p className="font-medium text-stone-900 text-sm mb-1">Groupes de soutien</p>
-                    <p className="text-stone-600 text-xs">Rencontrez d'autres personnes</p>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Avertissement légal */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.8 }}
-          className="mt-8 p-4 bg-stone-50 rounded-2xl border border-stone-200"
-        >
-          <p className="text-xs text-stone-600 text-center font-sans leading-relaxed">
-            <span className="font-medium text-stone-800">Cet outil est une boussole, pas un diagnostic.</span> 
-            Les résultats sont indicatifs et ne remplacent pas une consultation professionnelle.
-          </p>
-        </motion.div>
-
-        {/* Actions principales */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.9 }}
-          className="flex gap-3 mt-8"
-        >
-          <button
-            onClick={() => window.history.back()}
-            className="flex-1 py-3.5 px-6 bg-white border border-stone-300 text-stone-700 font-sans font-medium rounded-xl hover:bg-stone-50 transition-colors"
-          >
-            Retour
-          </button>
-          <button
-            onClick={onRestart}
-            className="flex-1 py-3.5 px-6 bg-stone-900 text-white font-sans font-medium rounded-xl hover:bg-stone-800 transition-colors"
-          >
-            Nouvelle évaluation
-          </button>
-        </motion.div>
-      </main>
-
-      {/* Footer */}
-      <footer className="pt-2 pb-6 px-6 mt-4">
-        <div className="max-w-2xl mx-auto text-center">
-          <div className="bg-stone-50 rounded-full py-4 px-8 inline-block mb-8 border border-stone-200">
-            <p className="text-sm text-stone-600 font-sans">
-              <span className="font-medium text-stone-800 italic">Prenez soin de vous!</span>
-            </p>
+            <h1 className="text-3xl md:text-4xl font-semibold tracking-tight text-foreground">
+              Évaluation {questionnaireName}
+            </h1>
           </div>
           
-          <div className="flex flex-col md:flex-row justify-between items-center text-xs text-stone-400 font-sans gap-4">
-            <p>© {new Date().getFullYear()} — Xcept-Health</p>
-            <p className="tracking-widest uppercase">MentalChecker par Ariel Shadrac</p>
+          <div className="flex gap-3 w-full md:w-auto">
+            <button
+              onClick={onRestart}
+              className="flex-1 md:flex-none px-6 py-2.5 bg-primary text-primary-foreground font-medium rounded-xl hover:bg-primary/90 transition-all shadow-sm"
+            >
+              Nouvelle évaluation
+            </button>
           </div>
         </div>
-      </footer>
+      </header>
+
+      {/* Main Dashboard Layout */}
+      <main className="max-w-7xl mx-auto px-6 pt-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+          
+          {/* Colonne Gauche : Score & Statut (Sticky sur Desktop) */}
+          <div className="lg:col-span-4 space-y-6 lg:sticky lg:top-40">
+            
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5 }}
+              className="bg-card rounded-3xl p-8 border border-border/60 shadow-sm relative overflow-hidden"
+            >
+              <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-border/50 to-border/10" />
+              
+              <div className="mb-8 text-center">
+                <p className="text-sm font-semibold tracking-widest uppercase text-muted-foreground mb-4">Score Global</p>
+                <div className="flex items-baseline justify-center gap-1">
+                  <span className="text-7xl font-bold tracking-tighter text-foreground">{score}</span>
+                  <span className="text-2xl font-medium text-muted-foreground">/{maxScore}</span>
+                </div>
+              </div>
+
+              <div className={`p-6 rounded-2xl border flex flex-col items-center text-center ${getSeverityColor()}`}>
+                <div className="mb-3">
+                  {getSeverityIcon()}
+                </div>
+                <h2 className="text-xl font-semibold mb-1">{severity}</h2>
+                <p className="text-sm opacity-90">
+                  {urgent ? "Une attention immédiate est recommandée" : 
+                   percentage <= 15 ? "Niveau de bien-être satisfaisant" : 
+                   "Des signes méritant une attention"}
+                </p>
+              </div>
+
+              {/* Jauge Minimaliste */}
+              <div className="mt-8">
+                <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
+                  <motion.div
+                    className={`h-full rounded-full ${urgent ? 'bg-destructive' : percentage <= 15 ? 'bg-primary' : 'bg-amber-500'}`}
+                    initial={{ width: 0 }}
+                    animate={{ width: `${Math.min(percentage, 100)}%` }}
+                    transition={{ duration: 1, ease: "easeOut" }}
+                  />
+                </div>
+              </div>
+
+              {showCelebration && (
+                <div className="absolute top-6 right-6 text-amber-500 animate-bounce">
+                  <Sparkles className="w-6 h-6" />
+                </div>
+              )}
+            </motion.div>
+
+            {/* Avertissement Médical Sidebar */}
+            <div className="bg-muted/30 rounded-2xl p-6 border border-border/40 flex gap-4 text-muted-foreground">
+              <Info className="w-5 h-5 shrink-0 text-foreground" />
+              <p className="text-sm leading-relaxed">
+                <strong className="text-foreground">Ceci n'est pas un diagnostic.</strong> Ce résultat est donné à titre indicatif et ne remplace en aucun cas l'avis d'un professionnel de la santé.
+              </p>
+            </div>
+
+          </div>
+
+          {/* Colonne Droite : Explications & Recommandations */}
+          <div className="lg:col-span-8 space-y-8">
+            
+            <motion.section
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1, duration: 0.5 }}
+              className="bg-card rounded-3xl p-8 md:p-10 border border-border/60 shadow-sm"
+            >
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                  <BookOpen className="w-6 h-6" />
+                </div>
+                <h2 className="text-2xl font-semibold text-foreground">Interprétation clinique</h2>
+              </div>
+              <p className="text-lg text-muted-foreground leading-relaxed">
+                Ce questionnaire évalue votre état sur la base du standard {questionnaireName}. 
+                Votre score suggère <strong>{severity.toLowerCase()}</strong>. 
+                {urgent
+                  ? " Ce niveau de détresse est important. Il est fortement conseillé d'en parler à un professionnel qui pourra vous accompagner et vous soulager."
+                  : percentage <= 15
+                  ? " Ces résultats sont très positifs. Continuez à prendre soin de vous et à maintenir votre équilibre."
+                  : " Ces signes montrent que vous traversez peut-être une période difficile. Reconnaître ces symptômes est la première étape pour aller mieux."}
+              </p>
+            </motion.section>
+
+            <motion.section
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2, duration: 0.5 }}
+            >
+              <h2 className="text-2xl font-semibold text-foreground mb-6 flex items-center gap-3">
+                <span className="w-2 h-8 rounded-full bg-primary inline-block"></span>
+                Recommandations personnalisées
+              </h2>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {getRecommendations().map((rec, index) => (
+                  <div key={index} className="bg-card rounded-2xl p-6 border border-border/60 shadow-sm flex items-start gap-4 group hover:border-primary/40 transition-colors">
+                    <div className="w-10 h-10 rounded-xl bg-muted group-hover:bg-primary/10 group-hover:text-primary transition-colors flex items-center justify-center shrink-0">
+                      {rec.icon}
+                    </div>
+                    <p className="text-foreground font-medium leading-snug">{rec.text}</p>
+                  </div>
+                ))}
+              </div>
+            </motion.section>
+
+            {urgent && (
+              <motion.section
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3, duration: 0.5 }}
+                className="bg-destructive/5 rounded-3xl p-8 md:p-10 border border-destructive/20 shadow-sm"
+              >
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="w-12 h-12 rounded-xl bg-destructive/10 flex items-center justify-center text-destructive">
+                    <AlertTriangle className="w-6 h-6" />
+                  </div>
+                  <h2 className="text-2xl font-semibold text-destructive">Soutien immédiat disponible</h2>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <a href="tel:3114" className="block bg-card rounded-2xl p-6 border border-destructive/10 hover:border-destructive/30 transition-all group">
+                    <div className="flex justify-between items-center mb-2">
+                      <h3 className="font-semibold text-foreground">Numéro National Prévention Suicide</h3>
+                      <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:text-destructive transition-colors" />
+                    </div>
+                    <p className="text-2xl font-bold text-destructive tracking-widest mb-1">3114</p>
+                    <p className="text-sm text-muted-foreground">Gratuit, confidentiel, 24h/24 et 7j/7</p>
+                  </a>
+
+                  <a href="tel:15" className="block bg-card rounded-2xl p-6 border border-destructive/10 hover:border-destructive/30 transition-all group">
+                    <div className="flex justify-between items-center mb-2">
+                      <h3 className="font-semibold text-foreground">Urgences Médicales (SAMU)</h3>
+                      <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:text-destructive transition-colors" />
+                    </div>
+                    <p className="text-2xl font-bold text-destructive tracking-widest mb-1">15</p>
+                    <p className="text-sm text-muted-foreground">En cas d'urgence médicale immédiate</p>
+                  </a>
+                </div>
+              </motion.section>
+            )}
+
+            <motion.section
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4, duration: 0.5 }}
+              className="bg-muted/30 rounded-3xl p-8 border border-border/40"
+            >
+              <h2 className="text-xl font-semibold text-foreground mb-6">Autres ressources utiles</h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="bg-card p-5 rounded-2xl border border-border/60">
+                  <h4 className="font-medium text-foreground mb-1">Professionnels de santé</h4>
+                  <p className="text-sm text-muted-foreground">Trouvez un psychologue ou un psychiatre près de chez vous (Doctolib, Qare...).</p>
+                </div>
+                <div className="bg-card p-5 rounded-2xl border border-border/60">
+                  <h4 className="font-medium text-foreground mb-1">Associations</h4>
+                  <p className="text-sm text-muted-foreground">Des groupes de parole et du soutien par des pairs (UNAFAM, Croix-Rouge...).</p>
+                </div>
+                <div className="bg-card p-5 rounded-2xl border border-border/60">
+                  <h4 className="font-medium text-foreground mb-1">Applications</h4>
+                  <p className="text-sm text-muted-foreground">Outils de méditation et suivi d'humeur reconnus (Petit BamBou, RespiRelax).</p>
+                </div>
+              </div>
+            </motion.section>
+
+          </div>
+        </div>
+      </main>
+
     </div>
   );
 }
